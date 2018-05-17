@@ -1,12 +1,13 @@
 import { Router } from 'express';
-import { wikiScraper, wikiRecommendations } from './scrapers/wiki';
+import { wikiRecommendations } from './scrapers/wiki';
+import { webRecommendations } from './scrapers/web';
 import { getSearchResults } from './wikipediaAPI/search';
 
 const router: Router = Router();
 
-router.post('/api/wiki', wikiScraper);
 router.post('/api/wikiSearch', getSearchResults);
 router.post('/api/wikiRecommendations', wikiRecommendations);
+router.post('/api/webRecommendations', webRecommendations);
 
 export {
   router
