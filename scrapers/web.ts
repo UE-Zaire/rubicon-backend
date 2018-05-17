@@ -9,13 +9,10 @@ const webRecommendations = (req: any, res: any) => {
     const $ = cheerio.load(result.data);
     const arr = $('a');
     const recommendations: Graph = {links: [], nodes: []};
-    console.log(arr);
-    for (let i = 13; i < arr.length; i++) {
+    for (let i = 0; i < arr.length; i++) {
       if (arr[i].children[0]) {  
         const item: any = arr[i].children[0].data;
-        if (item === '^') {
-          return res.send(recommendations);
-        } else if (item && item.indexOf('[') === -1 && item.indexOf('/') !== 0) {
+        if (item && !item.match(/\W/)) {
           recommendations.nodes.push({id: item, group: 1});
           recommendations.links.push({source: query, target: item, value: 1});
         }
