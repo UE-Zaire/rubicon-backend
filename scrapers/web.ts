@@ -1,21 +1,17 @@
 import axios from 'axios';
 import cheerio from 'cheerio';
+import { Graph } from './wiki';
 
-interface Graph {
-  links: Array<{ source: string; target: string; value: number }>;
-  nodes: Array<{ id: string | undefined ; group: number | undefined}>
-}
-
-const wikiRecommendations = (req: any, res: any) => {
+const webRecommendations = (req: any, res: any) => {
   const { link, query } = req.body;
   axios.get(link)
   .then((result: any) => {
     const $ = cheerio.load(result.data);
     const arr = $('a');
     const recommendations: Graph = {links: [], nodes: []};
-
+    console.log(arr);
     for (let i = 13; i < arr.length; i++) {
-      if (arr[i].children[0]) {
+      if (arr[i].children[0]) {  
         const item: any = arr[i].children[0].data;
         if (item === '^') {
           return res.send(recommendations);
@@ -34,6 +30,5 @@ const wikiRecommendations = (req: any, res: any) => {
 }
 
 export {
-  wikiRecommendations,
-  Graph
+  webRecommendations
 }
