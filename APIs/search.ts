@@ -21,7 +21,7 @@ const getGoogleSearchResults = (req: any, res: any) => {
     const $ = cheerio.load(result.data);
     const results: Array<{ title: string, link: string }> = [];    
     $('div[id=ires]').find('a').each((i, ele) => {
-      const link = $(ele).attr('href');
+      const link = $(ele).attr('href').slice(7);
       const title = $(ele).text();
       if (title !== 'Cached' && title !== 'Similar') {
         results.push({title: title, link: link});
