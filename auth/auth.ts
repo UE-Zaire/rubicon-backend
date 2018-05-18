@@ -1,4 +1,5 @@
 import { OAuth2Strategy } from 'passport-google-oauth';
+import { login } from '../database/controllers/users';
 import keys from '../config';
 
 export default (passport: any) => {
@@ -14,12 +15,5 @@ export default (passport: any) => {
     clientID: keys.GOOGLE_CLIENT_ID,
     clientSecret: keys.GOOGLE_CLIENT_SECRET,
     callbackURL: 'http://localhost:3005/api/auth'
-  },
-  (token: any, refreshToken: any, profile: any, done: any) => {
-    return done(null, {
-      profile: profile,
-      token: token
-    });
-  }));
+  }, login));
 }
-

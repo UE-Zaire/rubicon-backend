@@ -17,7 +17,7 @@ const callBackSucc = (req: any, res: any) => {
 
 const logout = (req: any, res: any) => {
   req.logout();
-  req.session.exists = false;
+  req.session = null;
   res.redirect('http://localhost:3000');
 }
 
