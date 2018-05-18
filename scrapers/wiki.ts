@@ -29,6 +29,7 @@ const wikiRecommendations = (req: any, res: any) => {
      {id: query, group: 1} 
      ]
    };
+   memo[query] = true;
 
    const $ = cheerio.load(result.data);
    var sent = false;
