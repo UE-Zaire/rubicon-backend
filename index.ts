@@ -5,6 +5,7 @@ import passport from 'passport';
 import auth from './auth/auth';
 import cookieParser from 'cookie-parser';
 import cookieSession from 'cookie-session';
+import keys from './config';
 
 const port = process.env.PORT || 3005;
 const app: express.Application = express();
@@ -15,7 +16,7 @@ app.use(passport.initialize());
 app.use(bodyParser.json());
 app.use(cookieSession({
     name: 'session',
-    keys: ['123']
+    keys: [keys.COOKIE_KEYS]
 }));
 app.use(cookieParser());
 
