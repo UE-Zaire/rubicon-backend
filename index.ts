@@ -1,17 +1,24 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import { router } from './controllers';
+import passport from 'passport';
+import auth from './auth';
+import cookieParser from 'cookie-parser';
+import cookieSession from 'cookie-session';
+import proxy from 'http-proxy-middleware';
 
 const port = process.env.PORT || 3005;
 const app: express.Application = express();
 
-app.use(bodyParser.json());
+auth(passport);
+app.use(passport.initialize());
 
-app.use((req, res, next) => {
-  res.header(`Access-Control-Allow-Origin`, `*`);
-  res.header(`Access-Control-Allow-Headers`, `Origin, X-Requested-With, Content-Type, Accept`);
-  next();
-});
+app.use(bodyParser.json());
+app.use(cookieSession({
+    name: 'session',
+    keys: ['123']
+}));
+app.use(cookieParser());
 
 app.use('/', router);
 
