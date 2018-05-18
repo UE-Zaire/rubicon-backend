@@ -2,10 +2,9 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { router } from './controllers';
 import passport from 'passport';
-import auth from './auth';
+import auth from './auth/auth';
 import cookieParser from 'cookie-parser';
 import cookieSession from 'cookie-session';
-import proxy from 'http-proxy-middleware';
 
 const port = process.env.PORT || 3005;
 const app: express.Application = express();
