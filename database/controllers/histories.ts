@@ -3,11 +3,12 @@ import knex from '../database';
 const saveHistory = async (req: any, res: any) => {
   const { history, username, nodes, links } = req.body;
   const userId = await knex('users').select('id').where({ user_name: username });
-  var historyId = await knex('histories').select('id').where({ name: history, user: userId[0].id });
+  const historyInfo = { name: history, user: userId[0].id };
+  var historyId = await knex('histories').select('id').where(historyInfo);
   
   if (!historyId.length) {
-    await knex('histories').insert({ name: history, user: userId[0].id });
-    historyId = await knex('histories').select('id').where({ name: history, user: userId[0].id });
+    await knex('histories').insert(historyInfo);
+    historyId = await knex('histories').select('id').where(historyInfo);
   } 
 
   nodes.forEach(async (node: any) => {
@@ -19,10 +20,11 @@ const saveHistory = async (req: any, res: any) => {
   })
 
   links.forEach(async (link: any) => {
-    const linkRecord = await knex('links').select().where({ source: link.source, target: link.target, history: historyId[0].id });
+    const linkInfo = { source: link.source, target: link.target, history: historyId[0].id };
+    const linkRecord = await knex('links').select().where(linkInfo);
 
     if (!linkRecord.length) {
-      await knex('links').insert({ source: link.source, target: link.target, history: historyId[0].id });
+      await knex('links').insert(linkInfo);
     }
   })
 };

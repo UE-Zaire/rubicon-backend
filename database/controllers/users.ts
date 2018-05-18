@@ -1,29 +1,23 @@
 import knex from '../database';
 
-const addUser = async (req: any, res: any) => {
-  const { username, email } = req.body;
-  const checkUser = await knex('users').select().where({ user_name: username, email });
-  
-  if (!checkUser.length) {
-    await knex('users').insert({ user_name: username, email });
-    res.send('added');
-  } else {
-    res.send('already a user');
-  }
+const addUser = async (id: string, displayName: string) => {  
+  await knex('users').insert({ user_name: displayName, email: id });
 };
 
-const login = async (req: any, res: any) => {
-  const { username, email } = req.body;
-  const checkUser = await knex('users').select().where({ user_name: username, email });
+const login = async (token: any, refreshToken: any, profile: any, done: any) => {
+  const { id, displayName } = profile;
+  const checkUser = await knex('users').select().where({ user_name: displayName, email: id });
 
-  if (checkUser.length) {
-    res.send('valid user');
-  } else {
-    res.send('invalid credentials');
+  if (!checkUser.length) {
+    addUser(id, displayName);
   }
+
+  return done(null, {
+    profile: profile,
+    token: token
+  });
 };
 
 export {
-  login,
-  addUser
+  login
 }
