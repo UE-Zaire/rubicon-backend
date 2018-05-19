@@ -1,5 +1,11 @@
 import knex from '../database';
 
+interface IHistory {
+  history: string,
+  nodes: Array<{ url: string, title: string }>,
+  links: Array<{ source: string, target: string }>
+}
+
 const saveHistory = async (req: any, res: any) => {
   const { history, nodes, links } = req.body;
   const userId = await knex('users').select('id').where({ email: req.session.id });
@@ -30,10 +36,16 @@ const saveHistory = async (req: any, res: any) => {
 };
 
 const getHistories = async (req: any, res: any) => {
-  const { email } = req.body;
-  const userId = await knex('users').select().where({ email });
+  const { id } = req.session;
+  const userId = await knex('users').select().where({ email: id });
   const histories = await knex('histories').select().where({ user: userId[0].id });
+  const history: IHistory[] = [];
 
+  histories.forEach((hist: any) => {
+    const currHist: IHistory = { history: hist.name, nodes: [], links: [] };
+    history.push(currHist);
+  })
+  console.log(histories);
   res.send(histories);
 }
 

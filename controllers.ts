@@ -14,7 +14,7 @@ router.post('/api/googleSearch', getGoogleSearchResults);
 router.post('/api/webRecommendations', webRecommendations);
 
 router.post('/api/history', saveHistory);
-router.post('/api/histories', getHistories);
+router.get('/api/histories', getHistories);
 
 router.get('/login', authenticate);
 router.get('/api/auth', callBackAuth, callBackSucc);
