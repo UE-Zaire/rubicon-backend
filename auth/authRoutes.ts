@@ -11,7 +11,9 @@ const callBackAuth = (req: any, res: any, next: any) => {
 }
 
 const callBackSucc = (req: any, res: any) => {
-  req.session.token = req.user.token;
+  const { token, id } = req.user;
+  req.session.token = token;
+  req.session.id = id;
   res.redirect('http://localhost:3000');
 }
 
@@ -24,10 +26,18 @@ const logout = (req: any, res: any) => {
 const checkLogged = (req: any, res: any) => {
   const logged = !!req.session.token;
   if (logged) {
+    console.log(req.session);
     res.send('true');
   } else {
     res.send('false');
   }
+}
+
+const createChromeSession = (req: any, res: any) => {
+  const { id } = req.body;
+  req.session.id = id;
+  console.log(req.session);
+  res.send('saved');
 }
 
 export {
@@ -35,5 +45,6 @@ export {
   callBackAuth,
   callBackSucc,
   logout,
-  checkLogged
+  checkLogged,
+  createChromeSession
 }
