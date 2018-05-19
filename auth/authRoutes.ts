@@ -26,10 +26,11 @@ const logout = (req: any, res: any) => {
 const checkLogged = (req: any, res: any) => {
   const logged = !!req.session.token;
   if (logged) {
-    console.log(req.session);
-    res.send('true');
+    const name = req.session.passport.user.profile.displayName;
+    const image = req.session.passport.user.profile.photos[0].value;
+    res.send({ logged: true, name, image });
   } else {
-    res.send('false');
+    res.send({ logged: false });
   }
 }
 
