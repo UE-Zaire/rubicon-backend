@@ -5,7 +5,7 @@ const addUser = async (id: string, displayName: string) => {
 };
 
 const login = async (token: any, refreshToken: any, profile: any, done: any) => {
-  const { id, displayName } = profile;
+  const { id, displayName } = profile;  
   const checkUser = await knex('users').select().where({ user_name: displayName, email: id });
 
   if (!checkUser.length) {

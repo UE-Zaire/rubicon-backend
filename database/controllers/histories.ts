@@ -1,8 +1,8 @@
 import knex from '../database';
 
 const saveHistory = async (req: any, res: any) => {
-  const { history, username, nodes, links } = req.body;
-  const userId = await knex('users').select('id').where({ user_name: username });
+  const { history, nodes, links } = req.body;
+  const userId = await knex('users').select('id').where({ email: req.session.id });
   const historyInfo = { name: history, user: userId[0].id };
   var historyId = await knex('histories').select('id').where(historyInfo);
   
@@ -30,8 +30,8 @@ const saveHistory = async (req: any, res: any) => {
 };
 
 const getHistories = async (req: any, res: any) => {
-  const { username, email } = req.body;
-  const userId = await knex('users').select().where({ user_name: username. email });
+  const { email } = req.body;
+  const userId = await knex('users').select().where({ email });
   const histories = await knex('histories').select().where({ user: userId[0].id });
 
   res.send(histories);
