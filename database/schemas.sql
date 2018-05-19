@@ -44,8 +44,8 @@ insert into nodes (url, title, history) values("http://www.wikipedia.com", "wiki
 insert into links (source, target, history) values((select id from nodes where title = "wikipedia"), (select id from nodes where title = "medium"), (select id from histories where name = "Thesis"));
 
 insert into histories (name, user) values("SoloWeek", (select id from users where email = '100006978842653239080'));
-insert into nodes (url, title, history) values("http://www.things.com", "things", (select id from histories where name = "Thesis"));
-insert into nodes (url, title, history) values("http://www.objects.com", "objects", (select id from histories where name = "Thesis"));  
+insert into nodes (url, title, history) values("http://www.things.com", "things", (select id from histories where name = "SoloWeek"));
+insert into nodes (url, title, history) values("http://www.objects.com", "objects", (select id from histories where name = "SoloWeek"));  
 insert into links (source, target, history) values((select id from nodes where title = "things"), (select id from nodes where title = "objects"), (select id from histories where name = "SoloWeek"));
 
 
