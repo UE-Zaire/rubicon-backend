@@ -37,7 +37,6 @@ const checkLogged = (req: any, res: any) => {
 const createChromeSession = (req: any, res: any) => {
   const { id } = req.body;
   req.session.id = id;
-  console.log(req.session);
   res.send('saved');
 }
 

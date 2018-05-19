@@ -36,16 +36,34 @@ const saveHistory = async (req: any, res: any) => {
 };
 
 const getHistories = async (req: any, res: any) => {
-  const { id } = req.session;
+  const id = req.session ? req.session.id : '0';
   const userId = await knex('users').select().where({ email: id });
   const histories = await knex('histories').select().where({ user: userId[0].id });
   const history: IHistory[] = [];
 
-  histories.forEach((hist: any) => {
+  for (let i = 0; i < histories.length; i++) {
+    const hist = histories[i];
     const currHist: IHistory = { history: hist.name, nodes: [], links: [] };
-    history.push(currHist);
-  })
-  console.log(histories);
+
+    const nodes = await knex('nodes').select().where({ history: hist.id });
+    const links = await knex('links').select().where({ history: hist.id });
+
+    for (let k = 0; k < nodes.length; k++) {
+      const node = nodes[i];
+      currHist.nodes.push(node);
+    }
+
+    for (let j = 0; j < links.length; j++) {
+      const link = links[j];
+
+      const linkSource = await knex('nodes').select('title').where({ id: link.source });
+      const linkTarget = await knex('nodes').select('title').where({ id: link.target });
+      const currLink = { source: linkSource[0].title, target: linkTarget[0].title };
+      currHist.links.push(currLink);
+    }
+      history.push(currHist);
+  }
+  console.log(history);
   res.send(histories);
 }
 
