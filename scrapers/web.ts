@@ -1,6 +1,7 @@
 import axios from 'axios';
 import cheerio from 'cheerio';
 import { Graph } from './wiki';
+import google from 'google';
 
 interface webLinkGraph {
   links: Array<{ source: string; target: string; value: number; targetLink: string; }>
@@ -9,24 +10,18 @@ interface webLinkGraph {
 
 const getGoogleSearchResults = (req: any, res: any) => {
   const { query } = req.body;
-  axios.get(`https://www.google.com/search?output=search&query=${query}`)
-  .then((result: any) => {
-    const $ = cheerio.load(result.data);
-    const results: any = [];  
 
-    $('div[id=ires]').find('a').each((i, ele) => {
-      const link = $(ele).attr('href').slice(7);
-      const title = $(ele).text();
+  google.resultsPerPage = 25
 
-      if (title !== 'Cached' && title !== 'Similar') {
-        results.push({title: title, link: link});
-      }
-    });
+  google(query, (err: any, response: any) => {
+    if (err) console.error(err)
+    const result: any = [];
 
-    res.send(results);
-  })
-  .catch((err: any) => {
-    console.log(err);
+    for (let i = 0; i < response.links.length; ++i) {
+      const link = response.links[i];
+      result.push({ title: link.title, link: link.href, description: link.description });
+    }
+  res.send(result);
   })
 }
 
