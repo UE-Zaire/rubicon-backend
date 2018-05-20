@@ -30,7 +30,7 @@ const wikiRecommendations = (req: any, res: any) => {
    const recommendations: Graph = {
      links: [], 
      nodes: [ 
-     {id: query, group: 1} 
+     {id: query, group: 2} 
      ]
    };
    memo[query] = true;
