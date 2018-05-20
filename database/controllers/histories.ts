@@ -1,4 +1,5 @@
 import knex from '../database';
+import fs from 'fs';
 
 interface IHistory {
   history: string,
@@ -63,7 +64,7 @@ const getHistories = async (req: any, res: any) => {
     }
       history.push(currHist);
   }
-  console.log(history);
+  
   res.send(histories);
 }
 
