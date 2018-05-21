@@ -2,6 +2,7 @@ import axios from 'axios';
 import cheerio from 'cheerio';
 import { Graph } from './wiki';
 import google from 'google';
+import bland from './commonLinks';
 
 interface webLinkGraph {
   links: Array<{ source: string; target: string; value: number; targetLink: string; }>
@@ -19,14 +20,17 @@ const getGoogleSearchResults = (req: any, res: any) => {
 
     for (let i = 0; i < response.links.length; ++i) {
       const link = response.links[i];
-      result.push({ title: link.title, link: link.href, description: link.description });
+      if (link.description && link.description.length > 2) {
+        result.push({ title: link.title, link: link.href, description: link.description });
+      }
     }
   res.send(result);
   })
 }
 
 const webRecommendations = (req: any, res: any) => {
-  const { link, query } = req.body;
+  let { link, query } = req.body;
+  query = query.replace(/[ ]/g, '\n');
   const memo: any = {};
 
   axios.get(link)
@@ -36,9 +40,9 @@ const webRecommendations = (req: any, res: any) => {
     memo[query] = true;
 
     $('body').find('a').each((i, ele) => {
-      const title: string = $(ele).text();
+      const title: string = $(ele).text().replace(/[ ]/g, '\n');
       const link: string = $(ele).attr('href');
-      if (!memo[title] && title && title.match(/\W/)) {
+      if (!memo[title] && title && !title.match(/\W/) && recommendations.nodes.length < 100 && title.length > 1 && !bland[title.toLowerCase()]) {
         recommendations.nodes.push({id: title, group: 1});
         recommendations.links.push({source: query, target: title, value: 1, targetLink: link });
         memo[title] = true;
