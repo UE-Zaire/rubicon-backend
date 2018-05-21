@@ -5,8 +5,8 @@ import google from 'google';
 import bland from './commonLinks';
 
 interface webLinkGraph {
-  links: Array<{ source: string; target: string; value: number; targetLink: string; }>
-  nodes: Array<{ id: string | undefined; group: number | undefined; }>
+  links: Array<{ source: string; target: string; value: number; }>
+  nodes: Array<{ id: string | undefined; group: number | undefined; link: string; }>
 }
 
 const getGoogleSearchResults = (req: any, res: any) => {
@@ -35,7 +35,7 @@ const webRecommendations = (req: any, res: any) => {
 
   axios.get(link)
   .then((result: any) => {
-    const recommendations: webLinkGraph = {links: [], nodes: [{ id: query, group: 2 }]};
+    const recommendations: webLinkGraph = {links: [], nodes: [{ id: query, group: 2, link: link }]};
     const $ = cheerio.load(result.data);
     memo[query] = true;
 
@@ -43,8 +43,8 @@ const webRecommendations = (req: any, res: any) => {
       const title: string = $(ele).text().replace(/[ ]/g, '\n');
       const link: string = $(ele).attr('href');
       if (!memo[title] && title && !title.match(/\W/) && recommendations.nodes.length < 100 && title.length > 1 && !bland[title.toLowerCase()]) {
-        recommendations.nodes.push({id: title, group: 1});
-        recommendations.links.push({source: query, target: title, value: 1, targetLink: link });
+        recommendations.nodes.push({id: title, group: 1, link: link});
+        recommendations.links.push({source: query, target: title, value: 1 });
         memo[title] = true;
       }
         
