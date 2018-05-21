@@ -35,7 +35,7 @@ const webRecommendations = (req: any, res: any) => {
 
   axios.get(link)
   .then((result: any) => {
-    const recommendations: webLinkGraph = {links: [], nodes: [{ id: query, group: 2, link: '' }]};
+    const recommendations: webLinkGraph = {links: [], nodes: [{ id: query, group: 2, link: link }]};
     const $ = cheerio.load(result.data);
     memo[query] = true;
 
