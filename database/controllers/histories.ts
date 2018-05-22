@@ -41,11 +41,20 @@ const getHistory = async (req: any, res: any) => {
 }
 
 const deleteHistory = async (req: any, res: any) => {
+  const { history } = req.body;
+  const id = req.session ? (req.session.id ? req.session.id : req.session.passport.user.profile.id) : "0";
 
+  await knex('histories').delete().where({ name: history, user: id });
+
+  res.send('deleted ' + history);
 }
 
 const patchHistory = async (req: any, res: any) => {
+  const { history, nodes } = req.body;
+  const id = req.session ? (req.session.id ? req.session.id : req.session.passport.user.profile.id) : "0";
+  await knex('histories').update({ nodes }).where({ user: id, history });
 
+  res.send('updated ' + history);
 }
 
 export {

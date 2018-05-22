@@ -17,7 +17,7 @@ router.post('/api/history', saveHistory);
 router.get('/api/history', getHistory);
 router.get('/api/histories', getHistories);
 router.delete('/api/history', deleteHistory);
-router.patch('api/history', patchHistory);
+router.patch('/api/history', patchHistory);
 
 router.get('/login', authenticate);
 router.get('/api/auth', callBackAuth, callBackSucc);
