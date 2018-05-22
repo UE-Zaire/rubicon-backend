@@ -24,7 +24,7 @@ const saveHistory = async (req: any, res: any) => {
 };
 
 const getHistories = async (req: any, res: any) => {
-  const id = req.session ? req.session.id : '0';
+  const id = req.session ? (req.session.id ? req.session.id : req.session.passport.user.profile.id) : "0";
   const userId = await knex('users').select().where({ email_id: id });
   const histories = await knex('histories').select().where({ user: userId[0].id });
   
