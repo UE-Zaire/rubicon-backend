@@ -20,20 +20,27 @@ const saveHistory = async (req: any, res: any) => {
     historyId = await knex('histories').select('id').where(historyInfo);
   } 
 
-  console.log(history);
   res.send('saved');
 };
 
 const getHistories = async (req: any, res: any) => {
-  const id = req.session ? req.session.id : '0';
+  const id = req.session ? (req.session.id ? req.session.id : req.session.passport.user.profile.id) : "0";
   const userId = await knex('users').select().where({ email_id: id });
   const histories = await knex('histories').select().where({ user: userId[0].id });
   
-  console.log(histories);
   res.send(histories);
+}
+
+const getHistory = async (req: any, res: any) => {
+  const { query } = req.query;
+  const userId = await knex('users').select('id').where({ email_id: req.session.id });
+  const history = await knex('histories').select().where({ user: userId[0].id, name: query });
+
+  res.send(history[0].nodes);
 }
 
 export {
   saveHistory, 
-  getHistories
+  getHistories,
+  getHistory
 }
