@@ -1,4 +1,5 @@
 import passport from 'passport';
+import knex from '../database/database';
 
 const authenticate = (req: any , res: any) => {
   passport.authenticate('google', {
@@ -34,9 +35,18 @@ const checkLogged = (req: any, res: any) => {
   }
 }
 
-const createChromeSession = (req: any, res: any) => {
-  const { id } = req.body;
+const createChromeSession = async (req: any, res: any) => {
+  const { id, name, link, picture } = req.body;
+  
+  const checkUser = await knex('users').select().where({ email_id: id });
+
+  if (!checkUser.length) {
+    await knex('uses').insert({ user_name: name, email_id: id });
+  }
+
   req.session.id = id;
+  req.session.name = name;
+  req.session.picture = picture;
   res.send('saved');
 }
 
