@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { wikiRecommendations, getWikiSearchResults } from './scrapers/wiki';
 import { webRecommendations, getGoogleSearchResults } from './scrapers/web';
 import { login } from './database/controllers/users';
-import { saveHistory, getHistories } from './database/controllers/histories';
+import { saveHistory, getHistories, getHistory } from './database/controllers/histories';
 import { authenticate, callBackAuth, callBackSucc, logout, checkLogged, createChromeSession } from './auth/authRoutes';
 import passport from 'passport';
 
@@ -14,6 +14,7 @@ router.post('/api/googleSearch', getGoogleSearchResults);
 router.post('/api/webRecommendations', webRecommendations);
 
 router.post('/api/history', saveHistory);
+router.get('/api/history', getHistory);
 router.get('/api/histories', getHistories);
 
 router.get('/login', authenticate);
