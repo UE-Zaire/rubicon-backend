@@ -57,7 +57,34 @@ const webRecommendations = (req: any, res: any) => {
   })
 }
 
+const extensionRecs = (req: any, res: any) => {
+  const { link } = req.query;
+  const memo: any = {};
+
+  axios.get(link)
+  .then((result: any) => {
+    const recommendations: any = [];
+    const $ = cheerio.load(result.data);
+    let count = 0;
+    $('body').find('a').each((i, ele) => {
+      const title: string = $(ele).text().replace(/[ ]/g, '\n');
+      const link: string = $(ele).attr('href');
+      count++;
+      if (count > 10 && !memo[title] && !title.match(/\W/) && recommendations.length < 3 && !bland[title.toLowerCase()]) {
+        recommendations.push([title, link]);
+        memo[title] = true;
+      }
+    })
+
+    res.send(recommendations);
+  })
+  .catch((err: any) => {
+    console.log(err);
+  })
+}
+
 export {
   webRecommendations,
-  getGoogleSearchResults
+  getGoogleSearchResults,
+  extensionRecs
 }
