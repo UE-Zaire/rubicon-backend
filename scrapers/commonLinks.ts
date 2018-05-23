@@ -11,7 +11,14 @@ const bland: any = {
   "careers": true,
   "more": true,
   "reference": true,
-  "faq": true
+  "faq": true,
+  "terms of service": true,
+  "cookie policy": true,
+  "jobs": true,
+  "help": true,
+  "comments": true,
+  "privacy": true,
+  "images": true
 }
 
 export default bland;

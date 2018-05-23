@@ -43,8 +43,9 @@ const getHistory = async (req: any, res: any) => {
 const deleteHistory = async (req: any, res: any) => {
   const { history } = req.body;
   const id = req.session ? (req.session.id ? req.session.id : req.session.passport.user.profile.id) : "0";
+  const user = await knex('users').select('id').where({ email_id: id });
 
-  await knex('histories').delete().where({ name: history, user: id });
+  await knex('histories').delete().where({ name: history, user: user[0].id });
 
   res.send('deleted ' + history);
 }

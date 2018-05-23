@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { wikiRecommendations, getWikiSearchResults } from './scrapers/wiki';
-import { webRecommendations, getGoogleSearchResults, extensionRecs } from './scrapers/web';
+import { webRecommendations, getGoogleSearchResults, extensionRecs, testRecs } from './scrapers/web';
 import { login } from './database/controllers/users';
 import { saveHistory, getHistories, getHistory, deleteHistory, patchHistory } from './database/controllers/histories';
 import { authenticate, callBackAuth, callBackSucc, logout, checkLogged, createChromeSession } from './auth/authRoutes';
@@ -24,6 +24,8 @@ router.get('/login', authenticate);
 router.get('/api/auth', callBackAuth, callBackSucc);
 router.get('/api/logged', checkLogged);
 router.get('/logout', logout);
+
+router.post('/test', testRecs);
 
 router.post('/api/chromeSession', createChromeSession);
 

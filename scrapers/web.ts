@@ -40,9 +40,12 @@ const webRecommendations = (req: any, res: any) => {
     memo[query] = true;
 
     $('body').find('a').each((i, ele) => {
-      const title: string = $(ele).text().replace(/[ ]/g, '\n');
+      let title: any = $(ele).text().replace(/[ ]+/g, ' ').replace(/\n/g, '').trim().slice(0, 10);
+      title = title.padEnd(13, '.');
       const link: string = $(ele).attr('href');
-      if (!memo[title] && title && !title.match(/\W/) && recommendations.nodes.length < 100 && title.length > 1 && !bland[title.toLowerCase()]) {
+      const letterMatch = title.match(/[A-Za-z]/g);
+      const nonLetterMatch = title.match(/\W/g);
+      if (!memo[title] && title && letterMatch && nonLetterMatch && letterMatch.length >= nonLetterMatch.length && recommendations.nodes.length < 100 && title.length > 1 && title.length < 20 && !bland[title.toLowerCase()]) {
         recommendations.nodes.push({id: title, group: 1, link: link});
         recommendations.links.push({source: query, target: title, value: 1 });
         memo[title] = true;
@@ -67,10 +70,38 @@ const extensionRecs = (req: any, res: any) => {
     const $ = cheerio.load(result.data);
     let count = 0;
     $('body').find('a').each((i, ele) => {
-      const title: string = $(ele).text().replace(/[ ]/g, '\n');
+      let title: any = $(ele).text().replace(/[ ]+/g, ' ').replace(/\n/g, '').trim().slice(0, 13);
+      title = title.padEnd(13, '.');
       const link: string = $(ele).attr('href');
       count++;
-      if (count > 10 && !memo[title] && !title.match(/\W/) && recommendations.length < 3 && !bland[title.toLowerCase()]) {
+      if (count > 10 && !memo[title] && !title.match(/\W/) && title.match(/[A-Za-z]/g) && recommendations.length < 3 && !bland[title.toLowerCase()] && title.length > 1 && title.length < 20) {
+        recommendations.push([title, link]);
+        memo[title] = true;
+      }
+    })
+
+    res.send(recommendations);
+  })
+  .catch((err: any) => {
+    console.log(err);
+  })
+}
+
+const testRecs = (req: any, res: any) => {
+  const { link } = req.body;
+  const memo: any = {};
+
+  axios.get(link)
+  .then((result: any) => {
+    const recommendations: any = [];
+    const $ = cheerio.load(result.data);
+    let count = 0;
+    $('body').find('a').each((i, ele) => {
+      const title: string = $(ele).text().replace(/[ ]+/g, ' ').replace(/\n/g, '').trim();
+      const link: string = $(ele).attr('href');
+      count++;
+
+      if (count > 10 && !memo[title] && recommendations.length < 100 && !bland[title.toLowerCase()] && title.length > 1 && link.slice(0, 4) === "http") {
         recommendations.push([title, link]);
         memo[title] = true;
       }
@@ -86,5 +117,37 @@ const extensionRecs = (req: any, res: any) => {
 export {
   webRecommendations,
   getGoogleSearchResults,
-  extensionRecs
+  extensionRecs,
+  testRecs
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
