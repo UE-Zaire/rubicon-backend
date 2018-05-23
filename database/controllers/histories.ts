@@ -52,7 +52,8 @@ const deleteHistory = async (req: any, res: any) => {
 const patchHistory = async (req: any, res: any) => {
   const { history, nodes } = req.body;
   const id = req.session ? (req.session.id ? req.session.id : req.session.passport.user.profile.id) : "0";
-  await knex('histories').update({ nodes }).where({ user: id, history });
+  const user = await knex('users').select('id').where({ email_id: id });
+  await knex('histories').where({ user: user[0].id, name: history }).update({ nodes: nodes });
 
   res.send('updated ' + history);
 }
