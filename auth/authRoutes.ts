@@ -29,7 +29,8 @@ const checkLogged = (req: any, res: any) => {
   if (logged) {
     const name = req.session.passport.user.profile.displayName;
     const image = req.session.passport.user.profile.photos[0].value;
-    res.send({ logged: true, name, image });
+    const id = req.session.passport.user.profile.id;
+    res.send({ logged: true, name, image, id: id });
   } else {
     res.send({ logged: false });
   }

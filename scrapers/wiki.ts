@@ -1,5 +1,6 @@
 import axios from 'axios';
 import cheerio from 'cheerio';
+import bland from './commonLinks';
 
 interface Graph {
   links: Array<{ source: string; target: string; value: number; }>
@@ -40,8 +41,13 @@ const wikiRecommendations = (req: any, res: any) => {
 
    $('div[id=content]').find('a').each((i, ele) => {
      const title = $(ele).attr('title');
+     var letterMatch, nonLetterMatch;
+     if (title) {
+       letterMatch = title.match(/[A-Za-z]/g);
+       nonLetterMatch = title.match(/\W/g); 
+     }
 
-     if (title && !title.match(/\W/) && !memo[title]) {
+     if (!memo[title] && title && letterMatch && nonLetterMatch && letterMatch.length >= nonLetterMatch.length && recommendations.nodes.length < 100 && title.length > 1 && title.length < 20 && !bland[title.toLowerCase()]) {
        recommendations.nodes.push({id: title, group: 1});
        recommendations.links.push({source: query, target: title, value: 1});
        memo[title] = true;
