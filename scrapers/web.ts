@@ -29,9 +29,14 @@ const getGoogleSearchResults = (req: any, res: any) => {
 }
 
 const webRecommendations = (req: any, res: any) => {
-  let { link, query } = req.body;
+  var { link, query } = req.body;
   query = query.replace(/[ ]/g, '\n');
   const memo: any = {};
+  if (link && link.match(/(\/wiki)/g)) {
+    let endpoint = link.slice(link.indexOf('/wiki'), link.length);
+    link = 'https://en.m.wikipedia.org' + endpoint;
+    console.log({firstLink: link});
+  }
 
   axios.get(link)
   .then((result: any) => {
@@ -40,11 +45,18 @@ const webRecommendations = (req: any, res: any) => {
     memo[query] = true;
 
     $('body').find('a').each((i, ele) => {
-      let title: any = $(ele).text().replace(/[ ]+/g, ' ').replace(/\n/g, '').trim().slice(0, 10);
-      title = title.padEnd(13, '.');
-      const link: string = $(ele).attr('href');
+      let title: any = $(ele).text().replace(/[ ]+/g, ' ').replace(/\n/g, '').trim()
+      if (title.length > 10) {
+        title = title.slice(0, 10);
+        title = title.padEnd(13, '.');
+      }
+      let link: any = $(ele).attr('href');
       const letterMatch = title.match(/[A-Za-z]/g);
       const nonLetterMatch = title.match(/\W/g);
+
+      if (link && link.match(/(\/wiki)/g)) {
+        link = 'https://en.m.wikipedia.org' + link;
+      }
       if (!memo[title] && title && letterMatch && nonLetterMatch && letterMatch.length >= nonLetterMatch.length && recommendations.nodes.length < 100 && title.length > 1 && title.length < 20 && !bland[title.toLowerCase()]) {
         recommendations.nodes.push({id: title, group: 1, link: link});
         recommendations.links.push({source: query, target: title, value: 1 });
@@ -70,8 +82,7 @@ const extensionRecs = (req: any, res: any) => {
     const $ = cheerio.load(result.data);
     let count = 0;
     $('body').find('a').each((i, ele) => {
-      let title: any = $(ele).text().replace(/[ ]+/g, ' ').replace(/\n/g, '').trim().slice(0, 13);
-      title = title.padEnd(13, '.');
+      let title: any = $(ele).text().replace(/[ ]+/g, ' ').replace(/\n/g, '').trim();
       const link: string = $(ele).attr('href');
       count++;
       if (count > 10 && !memo[title] && !title.match(/\W/) && title.match(/[A-Za-z]/g) && recommendations.length < 3 && !bland[title.toLowerCase()] && title.length > 1 && title.length < 20) {
@@ -79,7 +90,7 @@ const extensionRecs = (req: any, res: any) => {
         memo[title] = true;
       }
     })
-
+   
     res.send(recommendations);
   })
   .catch((err: any) => {
